@@ -7,5 +7,20 @@
 // This file should only export your HashMap, you choose class or factory.
 
 export class HashMap {
-  // Your turn.
+  constructor() {
+    this.hashBuckets = new Array(16);
+    this.loadFactor = 0.75;
+    this.capacity = 16;
+    this.entryCount = 0;
+  }
+
+  hash(key) {
+    let hashCode = 0;
+
+    const primeNumber = 31;
+    for (let i = 0; i < key.length; i++) {
+      hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
+    }
+    return hashCode;
+  }
 }

@@ -23,4 +23,36 @@ export class HashMap {
     }
     return hashCode;
   }
+  set(key, value) {
+    const hashKey = this.hash(key);
+
+    if(this.hashBuckets[hashKey] === undefined) {
+      this.hashBuckets[hashKey] = new Node(key, value);
+      this.entryCount++;
+      return;
+    }
+
+    let currNode = this.hashBuckets[hashKey];
+
+    while(true) {
+      if(currNode.key === key) {
+        currNode.value = value;
+        break;
+      }else if(currNode.nextNode !== null){
+        currNode = currNode.nextNode;
+      }else {
+        currNode.nextNode = new Node(key, value);
+        this.entryCount++;
+        break;
+      }
+    }
+  }
+}
+
+class Node {
+  constructor(key, value) {
+    this.key = key;
+    this.value = value;
+    this.nextNode = null;
+  }
 }

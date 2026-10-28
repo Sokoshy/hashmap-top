@@ -145,6 +145,24 @@ export class HashMap {
     }
     return keyArr;
   }
+  values(){
+    const arrValue = [];
+    for (const node of this.hashBuckets) {
+      if(node === undefined){
+        continue;
+      }
+      let currNode = node;
+      while(true){
+        arrValue.push(currNode.value);
+
+        if(currNode.nextNode === null){
+          break;
+        }
+        currNode = currNode.nextNode;
+      }
+    }
+    return arrValue;
+  }
 }
 
 class Node {

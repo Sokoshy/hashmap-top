@@ -66,6 +66,25 @@ export class HashMap {
       }
     }
   }
+  has(key){
+    const hashKey = this.hash(key);
+
+    if(this.hashBuckets[hashKey] === undefined) {
+      return false;
+    }
+
+    let currNode = this.hashBuckets[hashKey];
+
+    while(true) {
+      if(currNode.key === key) {
+        return true;
+      }else if(currNode.nextNode !== null){
+        currNode = currNode.nextNode;
+      }else {
+        return false;
+      }
+    }
+  }
 }
 
 class Node {

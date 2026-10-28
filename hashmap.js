@@ -163,6 +163,24 @@ export class HashMap {
     }
     return arrValue;
   }
+  entries(){
+    const arrKeyValue = [];
+    for (const node of this.hashBuckets) {
+      if(node === undefined){
+        continue;
+      }
+      let currNode = node;
+      while(true){
+        arrKeyValue.push([currNode.key ,currNode.value]);
+
+        if(currNode.nextNode === null){
+          break;
+        }
+        currNode = currNode.nextNode;
+      }
+    }
+    return arrKeyValue;
+  }
 }
 
 class Node {

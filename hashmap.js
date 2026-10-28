@@ -58,7 +58,7 @@ export class HashMap {
 
     while(true) {
       if(currNode.key === key) {
-        return currNode.value
+        return currNode.value;
       }else if(currNode.nextNode !== null){
         currNode = currNode.nextNode;
       }else {
@@ -87,6 +87,41 @@ export class HashMap {
   }
   length(){
     return this.entryCount;
+  }
+  remove(key){
+    const hashKey = this.hash(key);
+
+    if(this.hashBuckets[hashKey] === undefined) {
+      return false;
+    }
+
+    let currNode = this.hashBuckets[hashKey];
+    let lastNode = null;
+
+    while(true) {
+      if(currNode.key === key) {
+        if(lastNode === null){
+          if (currNode.nextNode !== null) {
+            this.hashBuckets[hashKey] = currNode.nextNode; 
+          }else {
+            this.hashBuckets[hashKey] = undefined;
+          }
+        }else{
+          if(currNode.nextNode === null){
+            lastNode.nextNode = null;
+          }else{
+            lastNode.nextNode = currNode.nextNode;
+          }
+        }
+        this.entryCount--;
+        return true;
+      }else if(currNode.nextNode !== null){
+        lastNode = currNode;
+        currNode = currNode.nextNode;
+      }else {
+        return false;
+      }
+    }
   }
 }
 

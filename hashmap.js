@@ -85,6 +85,9 @@ export class HashMap {
       }
     }
   }
+  length(){
+    return this.entryCount;
+  }
 }
 
 class Node {

@@ -123,6 +123,10 @@ export class HashMap {
       }
     }
   }
+  clear(){
+    this.hashBuckets = new Array(16);
+    this.entryCount = 0;
+  }
 }
 
 class Node {

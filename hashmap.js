@@ -127,6 +127,24 @@ export class HashMap {
     this.hashBuckets = new Array(16);
     this.entryCount = 0;
   }
+  keys(){
+    const keyArr = [];
+    for (const node of this.hashBuckets) {
+      if(node === undefined){
+        continue;
+      }
+      let currNode = node;
+      while(true){
+        keyArr.push(currNode.key);
+
+        if(currNode.nextNode === null){
+          break;
+        }
+        currNode = currNode.nextNode;
+      }
+    }
+    return keyArr;
+  }
 }
 
 class Node {

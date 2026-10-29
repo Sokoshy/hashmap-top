@@ -154,6 +154,55 @@ describe("HashMap - The Odin Project scenario", () => {
   });
 });
 
+describe("HashMap - growth steps 4 to 7", () => {
+  it("stays at capacity 16 at load 0.75 then doubles on 13th entry", () => {
+    const hashMap = createMap();
+
+    const initialPairs = [
+      ["apple", "red"],
+      ["banana", "yellow"],
+      ["carrot", "orange"],
+      ["dog", "brown"],
+      ["elephant", "gray"],
+      ["frog", "green"],
+      ["grape", "purple"],
+      ["hat", "black"],
+      ["ice cream", "white"],
+      ["jacket", "blue"],
+      ["kite", "pink"],
+      ["lion", "golden"],
+    ];
+    for (const [key, value] of initialPairs) hashMap.set(key, value);
+
+    // Step 4: 12 entries for capacity 16 is exactly load 0.75, no growth yet.
+    expect(hashMap.length()).toBe(12);
+    expect(hashMap.capacity).toBe(16);
+    expect(hashMap.hashBuckets.length).toBe(16);
+    expect(hashMap.length() / hashMap.capacity).toBe(0.75);
+
+    // Step 5: overwrite without adding keys changes neither length nor capacity.
+    hashMap.set("apple", "RED");
+    hashMap.set("banana", "YELLOW");
+    expect(hashMap.length()).toBe(12);
+    expect(hashMap.capacity).toBe(16);
+    expect(hashMap.hashBuckets.length).toBe(16);
+
+    // Step 6: 13th entry exceeds load factor, so capacity must double.
+    hashMap.set("moon", "silver");
+    expect(hashMap.length()).toBe(13);
+    expect(hashMap.capacity).toBe(32);
+    expect(hashMap.hashBuckets.length).toBe(32);
+
+    // Step 7: load drops well below threshold and entries stay spread and reachable.
+    expect(hashMap.length() / hashMap.capacity < 0.75).toBe(true);
+    for (const [key] of initialPairs) {
+      expect(hashMap.has(key)).toBe(true);
+    }
+    expect(hashMap.get("apple")).toBe("RED");
+    expect(hashMap.get("moon")).toBe("silver");
+  });
+});
+
 describe("HashMap - collision and growth robustness", () => {
   it("many keys stay accessible (possible collisions)", () => {
     const map = createMap();

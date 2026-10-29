@@ -26,118 +26,120 @@ export class HashMap {
   set(key, value) {
     const hashKey = this.hash(key);
 
-    if(this.hashBuckets[hashKey] === undefined) {
+    if (this.hashBuckets[hashKey] === undefined) {
       this.hashBuckets[hashKey] = new Node(key, value);
       this.entryCount++;
+      this.extendHash();
       return;
     }
 
     let currNode = this.hashBuckets[hashKey];
 
-    while(true) {
-      if(currNode.key === key) {
+    while (true) {
+      if (currNode.key === key) {
         currNode.value = value;
         break;
-      }else if(currNode.nextNode !== null){
+      } else if (currNode.nextNode !== null) {
         currNode = currNode.nextNode;
-      }else {
+      } else {
         currNode.nextNode = new Node(key, value);
         this.entryCount++;
+        this.extendHash();
         break;
       }
     }
   }
-  get(key){
+  get(key) {
     const hashKey = this.hash(key);
 
-    if(this.hashBuckets[hashKey] === undefined) {
+    if (this.hashBuckets[hashKey] === undefined) {
       return undefined;
     }
 
     let currNode = this.hashBuckets[hashKey];
 
-    while(true) {
-      if(currNode.key === key) {
+    while (true) {
+      if (currNode.key === key) {
         return currNode.value;
-      }else if(currNode.nextNode !== null){
+      } else if (currNode.nextNode !== null) {
         currNode = currNode.nextNode;
-      }else {
+      } else {
         return undefined;
       }
     }
   }
-  has(key){
+  has(key) {
     const hashKey = this.hash(key);
 
-    if(this.hashBuckets[hashKey] === undefined) {
+    if (this.hashBuckets[hashKey] === undefined) {
       return false;
     }
 
     let currNode = this.hashBuckets[hashKey];
 
-    while(true) {
-      if(currNode.key === key) {
+    while (true) {
+      if (currNode.key === key) {
         return true;
-      }else if(currNode.nextNode !== null){
+      } else if (currNode.nextNode !== null) {
         currNode = currNode.nextNode;
-      }else {
+      } else {
         return false;
       }
     }
   }
-  length(){
+  length() {
     return this.entryCount;
   }
-  remove(key){
+  remove(key) {
     const hashKey = this.hash(key);
 
-    if(this.hashBuckets[hashKey] === undefined) {
+    if (this.hashBuckets[hashKey] === undefined) {
       return false;
     }
 
     let currNode = this.hashBuckets[hashKey];
     let lastNode = null;
 
-    while(true) {
-      if(currNode.key === key) {
-        if(lastNode === null){
+    while (true) {
+      if (currNode.key === key) {
+        if (lastNode === null) {
           if (currNode.nextNode !== null) {
-            this.hashBuckets[hashKey] = currNode.nextNode; 
-          }else {
+            this.hashBuckets[hashKey] = currNode.nextNode;
+          } else {
             this.hashBuckets[hashKey] = undefined;
           }
-        }else{
-          if(currNode.nextNode === null){
+        } else {
+          if (currNode.nextNode === null) {
             lastNode.nextNode = null;
-          }else{
+          } else {
             lastNode.nextNode = currNode.nextNode;
           }
         }
         this.entryCount--;
         return true;
-      }else if(currNode.nextNode !== null){
+      } else if (currNode.nextNode !== null) {
         lastNode = currNode;
         currNode = currNode.nextNode;
-      }else {
+      } else {
         return false;
       }
     }
   }
-  clear(){
-    this.hashBuckets = new Array(16);
+  clear() {
+    this.hashBuckets = new Array(this.capacity);
     this.entryCount = 0;
   }
-  keys(){
+  keys() {
     const keyArr = [];
     for (const node of this.hashBuckets) {
-      if(node === undefined){
+      if (node === undefined) {
         continue;
       }
       let currNode = node;
-      while(true){
+      while (true) {
         keyArr.push(currNode.key);
 
-        if(currNode.nextNode === null){
+        if (currNode.nextNode === null) {
           break;
         }
         currNode = currNode.nextNode;
@@ -145,17 +147,17 @@ export class HashMap {
     }
     return keyArr;
   }
-  values(){
+  values() {
     const arrValue = [];
     for (const node of this.hashBuckets) {
-      if(node === undefined){
+      if (node === undefined) {
         continue;
       }
       let currNode = node;
-      while(true){
+      while (true) {
         arrValue.push(currNode.value);
 
-        if(currNode.nextNode === null){
+        if (currNode.nextNode === null) {
           break;
         }
         currNode = currNode.nextNode;
@@ -163,23 +165,36 @@ export class HashMap {
     }
     return arrValue;
   }
-  entries(){
+  entries() {
     const arrKeyValue = [];
     for (const node of this.hashBuckets) {
-      if(node === undefined){
+      if (node === undefined) {
         continue;
       }
       let currNode = node;
-      while(true){
-        arrKeyValue.push([currNode.key ,currNode.value]);
+      while (true) {
+        arrKeyValue.push([currNode.key, currNode.value]);
 
-        if(currNode.nextNode === null){
+        if (currNode.nextNode === null) {
           break;
         }
         currNode = currNode.nextNode;
       }
     }
     return arrKeyValue;
+  }
+  extendHash() {
+    const loadLevel = this.entryCount / this.capacity;
+    if (loadLevel > this.loadFactor) {
+      const oldHashBucket = this.entries();
+      this.entryCount = 0;
+      this.capacity *= 2;
+      this.hashBuckets = new Array(this.capacity);
+
+      oldHashBucket.forEach((currArr) => {
+        this.set(currArr[0], currArr[1]);
+      });
+    }
   }
 }
 
